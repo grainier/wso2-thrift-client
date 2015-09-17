@@ -16,7 +16,9 @@ public class ThriftClient {
         CommandLineParser parser = new GnuParser();
         String dataFolder = System.getProperty("user.dir") + "/resources/";
         String host = getLocalAddress().getHostAddress();
+        int port = 7611;
         Option optionIP = OptionBuilder.withArgName("host").hasArg().withDescription("host IP of the receiver").create("i");
+        Option optionPort = OptionBuilder.withArgName("port").hasArg().withDescription("host port of the receiver").create("p");
         Option optionData = OptionBuilder.withArgName("data").hasArg().withDescription("Location of the data files").create("f");
         options.addOption(optionIP);
         options.addOption(optionData);
@@ -29,7 +31,11 @@ public class ThriftClient {
             if (commandLine.hasOption("f")) {
                 dataFolder = commandLine.getOptionValue("f");
             }
+            if (commandLine.hasOption("p")) {
+                port = Integer.parseInt(commandLine.getOptionValue("p"));
+            }
             System.out.println("Host : " + host);
+            System.out.println("Port : " + port);
             System.out.println("Data Folder : " + dataFolder);
         } catch (ParseException exception) {
             System.out.print("Argument Parse error: ");
@@ -46,7 +52,7 @@ public class ThriftClient {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    publishers.add(new Thread(new ThriftPublisher(host, dataFolder + file.getName()), file.getName()));
+                    publishers.add(new Thread(new ThriftPublisher(host, port, dataFolder + file.getName()), file.getName()));
                 }
             }
         }

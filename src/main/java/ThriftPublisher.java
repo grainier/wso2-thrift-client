@@ -11,18 +11,22 @@ import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Scanner;
 
 public class ThriftPublisher implements Runnable {
     private static final String DATA_STREAM = "SmartPlugsDataStream";
     private static final String VERSION = "1.0.0";
-    private static final int defaultThriftPort = 30078;
+    private static final int defaultThriftPort = 7611;
     private static final int defaultBinaryPort = 9611;
     private String host;
+    private int port;
     private String dataFileLocation;
 
-    public ThriftPublisher(String host, String dataFileLocation) {
+    public ThriftPublisher(String host, int port, String dataFileLocation) {
         this.host = host;
+        this.port = port;
         this.dataFileLocation = dataFileLocation;
     }
 
@@ -76,9 +80,9 @@ public class ThriftPublisher implements Runnable {
             dataPublisher.publish(event);
             ThriftClient.COUNT++;
             if (ThriftClient.COUNT % 100000 == 0) {
-                System.out.println("Events Published : " + ThriftClient.COUNT);
+                Date date = new Date();
+                System.out.println(new Timestamp(date.getTime()) + " | Events Published : " + ThriftClient.COUNT);
             }
-
             i++;
         }
         scanner.close();
@@ -101,11 +105,11 @@ public class ThriftPublisher implements Runnable {
 
         AgentHolder.setConfigPath(getDataAgentConfigPath());
         String type = getProperty("type", "Thrift");
-        int receiverPort = defaultThriftPort;
+        int receiverPort = this.port;
         if (type.equals("Binary")) {
             receiverPort = defaultBinaryPort;
         }
-        int securePort = receiverPort + 1;
+        int securePort = receiverPort + 1; // padding can be vary
 
         String url = getProperty("url", "tcp://" + host + ":" + receiverPort);
         String authURL = getProperty("authURL", "ssl://" + host + ":" + securePort);
