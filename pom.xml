@@ -50,8 +50,8 @@
                 <configuration>
                     <mainClass>ThriftClient</mainClass>
                     <arguments>
-                        <argument>-host 10.100.7.93</argument>
-                        <argument>-data 10.100.7.93</argument>
+                        <argument>-i 10.100.7.93</argument>
+                        <argument>-f /home/data/</argument>
                     </arguments>
                 </configuration>
             </plugin>
