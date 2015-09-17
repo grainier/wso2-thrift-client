@@ -9,18 +9,22 @@ import java.util.List;
 
 public class ThriftClient {
 
-    public static int COUNT = 0;
+    public static volatile int COUNT = 0;
     public static void main(String[] args) throws SocketException, UnknownHostException, InterruptedException {
 
         Options options = new Options();
         CommandLineParser parser = new GnuParser();
         String dataFolder = System.getProperty("user.dir") + "/resources/";
+//        String dataFolder = "/home/grainier/Desktop/sb/output/";
         String host = getLocalAddress().getHostAddress();
+//        String host = "23.253.94.169";
         int port = 7611;
+//        int port = 30112;
         Option optionIP = OptionBuilder.withArgName("host").hasArg().withDescription("host IP of the receiver").create("i");
         Option optionPort = OptionBuilder.withArgName("port").hasArg().withDescription("host port of the receiver").create("p");
         Option optionData = OptionBuilder.withArgName("data").hasArg().withDescription("Location of the data files").create("f");
         options.addOption(optionIP);
+        options.addOption(optionPort);
         options.addOption(optionData);
 
         try {
